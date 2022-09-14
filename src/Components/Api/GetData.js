@@ -1,0 +1,373 @@
+import axios from "axios";
+import { message } from "antd";
+
+class GetData {
+  constructor() {
+    this.result = [];
+    this.collegeProfessorResult = [];
+  }
+  //countries
+  Countries(mthd) {
+    axios.get("countries/get").then((res) => {
+      // console.log(res)
+      if (res.data.success) {
+        mthd("countries", res.data.data.rows);
+        // this.setState({
+        //     countries: res.data.data.rows,
+        //     update: true
+        // });
+      } else {
+        message.error(res.data.message);
+      }
+    });
+  }
+  async CounteriesData() {
+    const response = await axios.get("countries/get");
+    if (response.data.success) return response.data.data.rows;
+    else message.error(response.data.message);
+  }
+  Grades(mthd) {
+    axios.get("subjects/grades?lang=eng").then((res) => {
+      // console.log(res)
+      if (res.data.success) {
+        mthd("grades", res.data.data.rows);
+      } else {
+        message.error(res.data.message);
+      }
+    });
+  }
+
+  SubjectTags(mthd) {
+    axios.get("tags/subjectTags").then((res) => {
+      if (res.data.success) {
+        mthd("tags", res.data.data.rows);
+      } else {
+        message.error(res.data.message);
+      }
+    });
+  }
+
+  professorTags(mthd) {
+    axios.get("tags/professorTags").then((res) => {
+      if (res.data.success) {
+        mthd("tags", res.data.data.rows);
+      } else {
+        message.error(res.data.message);
+      }
+    });
+  }
+
+  async ProfessorMajorDetails(ProfessorId) {
+    const response = await axios.get(`professors/detail?id=${ProfessorId}`);
+    if (response.data.success) return response.data.data;
+    else message.error(response.data.message);
+  }
+  async ProfessorsComments(professorID) {
+    console.log(professorID);
+    const response = await axios.get(
+      `professors/comments/get?id=${professorID}`
+    );
+    if (response.data.success) return response.data.data.docs;
+    else message.error(response.data.message);
+  }
+
+  Universities(countryID, mthd) {
+    axios.get(`univeristeries/get?id=${countryID}`).then((res) => {
+      // console.log(res)
+      if (res.data.success) {
+        mthd("universities", res.data.data.docs);
+      } else {
+        message.error(res.data.message);
+      }
+    });
+  }
+
+  Colleges(univID, mthd) {
+    axios.get(`colleges/get?id=${univID}`).then((res) => {
+      // console.log(res)
+      if (res.data.success) {
+        mthd("colleges", res.data.data.docs);
+      } else {
+        message.error(res.data.message);
+      }
+    });
+  }
+
+  Majors(collegeID, mthd) {
+    axios.get(`majors/get?id=${collegeID}`).then((res) => {
+      if (res.data.success) {
+        mthd("majors", res.data.data.docs);
+      } else {
+        message.error(res.data.message);
+      }
+    });
+  }
+  async BookAllDetail(BookID) {
+    const response = await axios.get(`user/BookStore/detail?bookID=${BookID}`);
+    if (response.data.success) return response.data.data;
+    else message.error(response.data.message);
+  }
+  async ServiceSaleProvider(ServiceID) {
+    const response = await axios.get(
+      `user/ServiceProvider/detail?serviceID=${ServiceID}`
+    );
+    if (response.data.success) return response.data.data;
+    else message.error(response.data.message);
+  }
+
+  Subjects(majorID, mthd) {
+    axios.get(`subjects/get?id=${majorID}`).then((res) => {
+      // console.log(res)
+      if (res.data.success) {
+        mthd("subjects", res.data.data.docs);
+      } else {
+        message.error(res.data.message);
+      }
+    });
+  }
+  AddBook(BookID) {
+    axios.get(`user/Book/saved/${BookID}`).then((res) => {
+      console.log(res);
+    });
+  }
+  YearTaken(mthd) {
+    axios.get("subjects/year/list").then((res) => {
+      if (res.data.success) {
+        mthd("years", res.data.data.rows);
+      } else {
+        message.error(res.data.message);
+      }
+    });
+  }
+  HardLevels(mthd) {
+    axios.get("subjects/hardLevel").then((res) => {
+      if (res.data.success) {
+        mthd("hardlevels", res.data.data.rows);
+      } else {
+        message.error(res.data.message);
+      }
+    });
+  }
+  Rating(mthd) {
+    axios.get("subjects/rating").then((res) => {
+      if (res.data.success) {
+        mthd("rating", res.data.data.rows);
+      } else {
+        message.error(res.data.message);
+      }
+    });
+  }
+  ExamForm(mthd) {
+    axios.get("subjects/examFrom").then((res) => {
+      if (res.data.success) {
+        mthd("examform", res.data.data.rows);
+      } else {
+        message.error(res.data.message);
+      }
+    });
+  }
+  TeachingStyle(mthd) {
+    axios.get("professors/teaching/style").then((res) => {
+      if (res.data.success) {
+        mthd("teachingstyle", res.data.data.rows);
+      } else {
+        message.error(res.data.message);
+      }
+    });
+  }
+
+  UsedBookListing = (data) => {
+    const res = async () => {
+      const resp = await axios
+        .get("/user/BookStore/bookStore?bookType=Used Books")
+        // .then((response) => {
+        //     if (response) {
+        //         this.result = response;
+        //     }
+        // })
+        //     console.log(this.result)
+        .catch(function (error) {
+          console.log(error);
+        });
+
+      this.result = resp;
+      return resp;
+    };
+    return res();
+  };
+  RequestedBookListing = (data) => {
+    const res = async () => {
+      const resp = await axios
+        .get("/user/BookStore/bookStore?bookType=Requested")
+        // .then((response) => {
+        //     if (response) {
+        //         this.result = response;
+        //     }
+        // })
+        //     console.log(this.result)
+        .catch(function (error) {
+          console.log(error);
+        });
+      return resp;
+    };
+
+    return res();
+  };
+  ProvidedServicListing = () => {
+    const res = async () => {
+      const resp = await axios
+        .get("/user/ServiceProvider/serviceProvider?serviceType=Provided")
+        // .then((response) => {
+        //     if (response) {
+        //         this.result = response;
+        //     }
+        // })
+        //     console.log(this.result)
+        .catch(function (error) {
+          console.log(error);
+        });
+
+      this.result = resp;
+      return resp;
+    };
+    return res();
+  };
+  RequestedServicListing = (data) => {
+    const res = async () => {
+      const resp = await axios
+        .get("/user/ServiceProvider/serviceProvider?serviceType=Requested")
+        // .then((response) => {
+        //     if (response) {
+        //         this.result = response;
+        //     }
+        // })
+        //     console.log(this.result)
+        .catch(function (error) {
+          console.log(error);
+        });
+      return resp;
+    };
+
+    return res();
+  };
+
+  CollegeProfessors = (data) => {
+    const res = async () => {
+      const resp = await axios
+        .get(`/professors/getProfessorByCollege?id=${data}`)
+        .catch(function (error) {
+          console.log(error);
+        });
+      return resp;
+    };
+    return res();
+  };
+
+  MajorProfessors = (data) => {
+    const res = async () => {
+      const resp = await axios
+        .get(`/professors/get?id=${data}`)
+        .catch(function (error) {
+          console.log(error);
+        });
+
+      return resp;
+    };
+    return res();
+  };
+
+  MajorSubjects = (data) => {
+    const res = async () => {
+      const resp = await axios
+        .get(`subjects/get?id=${data}`)
+        .catch(function (error) {
+          console.log(error);
+        });
+
+      return resp;
+    };
+    return res();
+  };
+
+  BackPack = () => {
+    const token = localStorage.getItem("x-auth-token");
+    const res = async () => {
+      const resp = await axios
+        .get(`user/getUser`, {
+          header: {
+            " x-auth-token": token,
+          },
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      return resp;
+      console.log(resp);
+    };
+    return res();
+  };
+
+  async SubjectMajorDetails(SubjectId) {
+    const response = await axios.get(`subjects/detail?id=${SubjectId}`);
+    if (response.data.success) return response.data.data;
+    else message.error(response.data.message);
+  }
+
+  async SubjectAllComments(SubjectId) {
+    const response = await axios.get(`subjects/comments/get?id=${SubjectId}`);
+    console.log(response);
+    if (response.data.success) return response.data.data.docs;
+    else message.error(response.data.message);
+  }
+  async UserComment() {
+    const token = localStorage.getItem("x-auth-token");
+    const res = async () => {
+      const resp = await axios
+        .get(`subjects/comments/getUserComments`, {
+          header: {
+            "x-auth-token": token,
+          },
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      return resp;
+    };
+    return res();
+  }
+
+  async BookFav() {
+    const token = localStorage.getItem("x-auth-token");
+    const res = async () => {
+      const resp = await axios
+        .get(`user/BookStore/userBooks`, {
+          header: {
+            "x-auth-token": token,
+          },
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      return resp;
+    };
+    return res();
+  }
+  async FavSer() {
+    const token = localStorage.getItem("x-auth-token");
+    const res = async () => {
+      const resp = await axios
+        .get(`user/ServiceProvider/userServices`, {
+          header: {
+            "x-auth-token": token,
+          },
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      return resp;
+    };
+    return res();
+  }
+}
+
+export default new GetData();
